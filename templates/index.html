@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISY503 Sentiment Analysis | Intelligent Systems</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <h1>ISY503 Sentiment Analysis</h1>
+            </div>
+            <p class="subtitle">Intelligent Systems — Amazon Product Review Classifier</p>
+            <div class="badge-container">
+                <span class="badge">BiLSTM + Attention</span>
+                <span class="badge">PyTorch</span>
+                <span class="badge">Flask</span>
+            </div>
+        </header>
+
+        <!-- Main Interface -->
+        <main class="main-content">
+            <!-- Input Section -->
+            <section class="input-section">
+                <label for="review-input" class="input-label">
+                    Enter a product review to analyze its sentiment
+                </label>
+                <textarea 
+                    id="review-input" 
+                    class="review-textarea" 
+                    placeholder="Example: This product is absolutely amazing! The quality exceeded my expectations and shipping was incredibly fast. Highly recommend to everyone!"
+                    rows="5"
+                    maxlength="2000"
+                ></textarea>
+                <div class="input-meta">
+                    <span id="char-count">0 / 2000 characters</span>
+                    <span class="hint">Tip: Longer reviews provide more accurate results</span>
+                </div>
+
+                <button id="analyze-btn" class="analyze-button">
+                    <span class="btn-text">Analyze Sentiment</span>
+                    <span class="btn-loader hidden">Analyzing...</span>
+                </button>
+            </section>
+
+            <!-- Results Section -->
+            <section id="results-section" class="results-section hidden">
+                <div class="result-card">
+                    <div class="result-header">
+                        <h2>Analysis Result</h2>
+                        <span id="confidence-badge" class="confidence-badge">--</span>
+                    </div>
+
+                    <div id="sentiment-output" class="sentiment-output">
+                        <span class="sentiment-text">Waiting for input...</span>
+                    </div>
+
+                    <!-- Confidence Bar -->
+                    <div class="confidence-container">
+                        <div class="confidence-label">
+                            <span>Confidence</span>
+                            <span id="confidence-value">0%</span>
+                        </div>
+                        <div class="confidence-bar-bg">
+                            <div id="confidence-bar" class="confidence-bar"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Attention Visualization -->
+                <div class="attention-card">
+                    <h3>Attention Visualization</h3>
+                    <p class="attention-desc">
+                        Words highlighted in <span class="hot">red</span> had the strongest influence 
+                        on the model's decision. This demonstrates how the attention mechanism 
+                        focuses on sentiment-bearing words.
+                    </p>
+                    <div id="attention-words" class="attention-words">
+                        <!-- Dynamically populated -->
+                    </div>
+                </div>
+
+                <!-- Technical Details -->
+                <div class="details-card">
+                    <h3>Technical Details</h3>
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <span class="detail-label">Cleaned Input</span>
+                            <span id="cleaned-text" class="detail-value">--</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Token Count</span>
+                            <span id="token-count" class="detail-value">--</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Model</span>
+                            <span class="detail-value">BiLSTM + Self-Attention</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Example Reviews -->
+            <section class="examples-section">
+                <h3>Try These Examples</h3>
+                <div class="examples-grid">
+                    <button class="example-btn" data-sentiment="positive">
+                        <span class="example-tag positive-tag">Positive</span>
+                        "This product exceeded all my expectations! Absolutely fantastic quality and fast delivery."
+                    </button>
+                    <button class="example-btn" data-sentiment="negative">
+                        <span class="example-tag negative-tag">Negative</span>
+                        "Terrible waste of money. Broke after one day and customer service completely ignored me."
+                    </button>
+                    <button class="example-btn" data-sentiment="positive">
+                        <span class="example-tag positive-tag">Positive</span>
+                        "Outstanding build quality and intuitive design. This is exactly what I needed for my workflow."
+                    </button>
+                    <button class="example-btn" data-sentiment="negative">
+                        <span class="example-tag negative-tag">Negative</span>
+                        "Complete garbage with false advertising. The actual product looks nothing like the photos shown."
+                    </button>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>ISY503 Intelligent Systems | Torrens University Australia</p>
+            <p class="footer-meta">Built with PyTorch, Flask & Modern Web Technologies</p>
+        </footer>
+    </div>
+
+    <script>
+        // DOM Elements
+        const reviewInput = document.getElementById('review-input');
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const charCount = document.getElementById('char-count');
+        const resultsSection = document.getElementById('results-section');
+        const sentimentOutput = document.getElementById('sentiment-output');
+        const confidenceBar = document.getElementById('confidence-bar');
+        const confidenceValue = document.getElementById('confidence-value');
+        const confidenceBadge = document.getElementById('confidence-badge');
+        const attentionWords = document.getElementById('attention-words');
+        const cleanedText = document.getElementById('cleaned-text');
+        const tokenCount = document.getElementById('token-count');
+        const exampleBtns = document.querySelectorAll('.example-btn');
+
+        // Character counter
+        reviewInput.addEventListener('input', () => {
+            charCount.textContent = `${reviewInput.value.length} / 2000 characters`;
+        });
+
+        // Example buttons
+        exampleBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                reviewInput.value = btn.textContent.replace(/"Positive"|"Negative"/g, '').trim();
+                charCount.textContent = `${reviewInput.value.length} / 2000 characters`;
+                reviewInput.focus();
+            });
+        });
+
+        // Analyze function
+        analyzeBtn.addEventListener('click', async () => {
+            const text = reviewInput.value.trim();
+
+            if (!text) {
+                alert('Please enter a review statement first.');
+                return;
+            }
+
+            // UI State: Loading
+            analyzeBtn.disabled = true;
+            analyzeBtn.querySelector('.btn-text').classList.add('hidden');
+            analyzeBtn.querySelector('.btn-loader').classList.remove('hidden');
+            resultsSection.classList.add('hidden');
+
+            try {
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: text })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    displayResults(data);
+                } else {
+                    alert(data.error || 'Analysis failed. Please try again.');
+                }
+            } catch (error) {
+                alert('Network error. Please ensure the server is running.');
+                console.error(error);
+            } finally {
+                // UI State: Reset
+                analyzeBtn.disabled = false;
+                analyzeBtn.querySelector('.btn-text').classList.remove('hidden');
+                analyzeBtn.querySelector('.btn-loader').classList.add('hidden');
+            }
+        });
+
+        function displayResults(data) {
+            resultsSection.classList.remove('hidden');
+
+            // Sentiment output
+            const isPositive = data.sentiment_class === 'positive';
+            const icon = isPositive ? '✅' : '❌';
+            const colorClass = isPositive ? 'positive-result' : 'negative-result';
+
+            sentimentOutput.innerHTML = `
+                <span class="sentiment-icon">${icon}</span>
+                <span class="sentiment-text ${colorClass}">${data.sentiment}</span>
+            `;
+
+            // Confidence
+            const confidencePct = Math.round(data.confidence * 100);
+            confidenceValue.textContent = `${confidencePct}%`;
+            confidenceBar.style.width = `${confidencePct}%`;
+            confidenceBar.className = `confidence-bar ${colorClass}`;
+
+            // Confidence badge
+            let badgeText = 'Low Confidence';
+            if (confidencePct >= 90) badgeText = 'Very High Confidence';
+            else if (confidencePct >= 75) badgeText = 'High Confidence';
+            else if (confidencePct >= 60) badgeText = 'Moderate Confidence';
+            confidenceBadge.textContent = badgeText;
+            confidenceBadge.className = `confidence-badge ${colorClass}`;
+
+            // Attention visualization
+            attentionWords.innerHTML = '';
+            if (data.attention_data && data.attention_data.length > 0) {
+                data.attention_data.forEach(item => {
+                    const span = document.createElement('span');
+                    span.className = 'attention-token';
+                    span.textContent = item.token;
+                    // Map normalized weight to opacity (0.3 to 1.0)
+                    const opacity = 0.3 + (item.normalized * 0.7);
+                    span.style.backgroundColor = isPositive 
+                        ? `rgba(34, 197, 94, ${opacity})`  // Green for positive
+                        : `rgba(239, 68, 68, ${opacity})`;   // Red for negative
+                    span.title = `Attention weight: ${item.weight.toFixed(4)}`;
+                    attentionWords.appendChild(span);
+                });
+            }
+
+            // Technical details
+            cleanedText.textContent = data.cleaned_text || '--';
+            tokenCount.textContent = data.token_count || '--';
+
+            // Scroll to results
+            resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Allow Enter key to submit (Ctrl+Enter)
+        reviewInput.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'Enter') {
+                analyzeBtn.click();
+            }
+        });
+    </script>
+</body>
+</html>

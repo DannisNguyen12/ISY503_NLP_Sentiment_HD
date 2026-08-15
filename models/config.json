@@ -1,0 +1,20 @@
+{
+  "data_dir": "./data",
+  "model_dir": "./models",
+  "max_words": 20000,
+  "max_len": 200,
+  "embedding_dim": 100,
+  "hidden_dim": 128,
+  "num_layers": 2,
+  "dropout": 0.5,
+  "batch_size": 64,
+  "learning_rate": 0.001,
+  "num_epochs": 5,
+  "patience": 5,
+  "min_review_length": 5,
+  "max_review_length": 500,
+  "train_split": 0.7,
+  "val_split": 0.15,
+  "test_split": 0.15,
+  "seed": 42
+}
