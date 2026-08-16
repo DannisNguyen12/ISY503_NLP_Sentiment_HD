@@ -1,3 +1,0 @@
-# Minimal runtime dependencies for Vercel inference deployment
-Flask>=2.3.0
-torch>=2.0.0
