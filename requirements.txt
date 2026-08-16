@@ -1,8 +1,6 @@
 # Minimal runtime dependencies for Vercel inference deployment
 Flask>=2.3.0
 torch>=2.0.0
-<<<<<<< HEAD
-=======
 #numpy>=1.24.0
 
 # Data Processing
@@ -17,4 +15,3 @@ flask>=2.3.0
 
 # Utilities
 #requests>=2.31.0
->>>>>>> main
