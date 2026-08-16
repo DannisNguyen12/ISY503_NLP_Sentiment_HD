@@ -195,22 +195,6 @@ Automated sentiment analysis influences product rankings, marketing strategies, 
 | Frontend | HTML5, CSS3, Vanilla JavaScript |
 | Version Control | Git |
 
----
-
-## 📝 Citation
-
-If referencing this work:
-
-```
-[Your Name]. (2026). ISY503 Intelligent Systems: NLP Sentiment Analysis 
-with BiLSTM and Self-Attention. Torrens University Australia.
-```
-
----
-
-**GitHub Repository:** [Your GitHub Link]
-
----
 
 ## 📄 License
 
