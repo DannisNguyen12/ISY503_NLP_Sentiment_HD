@@ -1,7 +1,7 @@
 # ISY503 Intelligent Systems — NLP Sentiment Analysis
 
 > **Assessment 3 | Torrens University Australia**  
-> **HD-Level Implementation | BiLSTM with Self-Attention**
+> **Bi-LSTM Implementation | BiLSTM with Self-Attention**
 
 ---
 
