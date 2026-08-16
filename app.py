@@ -2,8 +2,8 @@
 ISY503 Assessment 3 — NLP Sentiment Analysis Web Application
 Flask-based web interface for sentiment classification
 
-Author: [Your Name]
-Student ID: [Your ID]
+Author: Manh Long Nguyen
+Student ID: A000222381
 Date: 2026
 
 This application provides a simple web interface with:

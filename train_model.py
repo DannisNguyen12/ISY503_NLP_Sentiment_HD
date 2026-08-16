@@ -2,8 +2,8 @@
 ISY503 Assessment 3 — NLP Sentiment Analysis
 Train a BiLSTM with Attention for Amazon Product Review Sentiment Classification
 
-Author: [Your Name]
-Student ID: [Your ID]
+Author: Manh Long Nguyen
+Student ID: A000222381
 Date: 2026
 
 This script implements a complete deep learning pipeline for sentiment analysis
