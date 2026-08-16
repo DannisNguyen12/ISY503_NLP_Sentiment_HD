@@ -1,24 +1,3 @@
-"""
-ISY503 Assessment 3 — NLP Sentiment Analysis Web Application
-Flask-based web interface for sentiment classification
-
-Author: [Your Name]
-Student ID: [Your ID]
-Date: 2026
-
-This application provides a simple web interface with:
-  - Text input field for entering review statements
-  - Execute button to trigger sentiment analysis
-  - Dynamic output display showing "Positive review" or "Negative review"
-  - Confidence score visualization
-  - Attention heatmap for model interpretability
-
-Original Contributions:
-  - Real-time attention visualization showing which words influenced the prediction
-  - Confidence threshold indicators with color-coded feedback
-  - Responsive design with modern UI/UX principles
-  - RESTful API endpoint for programmatic access
-"""
 
 import os
 import json
@@ -46,12 +25,6 @@ app.config['SECRET_KEY'] = 'isy503-sentiment-analysis-2026'
 # =============================================================================
 
 def load_model():
-    """
-    # CONTRIBUTION: Robust model loading with validation checks
-
-    Loads the trained model, vocabulary, and configuration.
-    Includes error handling for missing files and version compatibility.
-    """
     model_dir = CONFIG['model_dir']
 
     # Verify required files exist
@@ -114,31 +87,10 @@ def initialize():
 
 @app.route('/')
 def index():
-    """
-    # CONTRIBUTION: Clean, intuitive landing page with example inputs
-
-    Renders the main sentiment analysis interface with:
-    - Large text input area
-    - Analyze button with loading state
-    - Example reviews for quick testing
-    - Instructions for optimal input
-    """
     return render_template('index.html')
 
 @app.route('/analyze', methods=['POST'])
 def analyze():
-    """
-    # CONTRIBUTION: RESTful API endpoint with comprehensive response
-
-    Handles sentiment analysis requests with:
-    - Input validation and sanitization
-    - Real-time prediction with confidence scoring
-    - Attention weight extraction for interpretability
-    - Structured JSON response for frontend rendering
-
-    Request:  POST with JSON body {"text": "review text here"}
-    Response: JSON with sentiment, confidence, attention_data, cleaned_text
-    """
     try:
         data = request.get_json()
 

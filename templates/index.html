@@ -103,35 +103,15 @@
                     </div>
                 </div>
             </section>
-
-            <!-- Example Reviews -->
-            <section class="examples-section">
-                <h3>Try These Examples</h3>
-                <div class="examples-grid">
-                    <button class="example-btn" data-sentiment="positive">
-                        <span class="example-tag positive-tag">Positive</span>
-                        "This product exceeded all my expectations! Absolutely fantastic quality and fast delivery."
-                    </button>
-                    <button class="example-btn" data-sentiment="negative">
-                        <span class="example-tag negative-tag">Negative</span>
-                        "Terrible waste of money. Broke after one day and customer service completely ignored me."
-                    </button>
-                    <button class="example-btn" data-sentiment="positive">
-                        <span class="example-tag positive-tag">Positive</span>
-                        "Outstanding build quality and intuitive design. This is exactly what I needed for my workflow."
-                    </button>
-                    <button class="example-btn" data-sentiment="negative">
-                        <span class="example-tag negative-tag">Negative</span>
-                        "Complete garbage with false advertising. The actual product looks nothing like the photos shown."
-                    </button>
-                </div>
-            </section>
         </main>
 
         <!-- Footer -->
         <footer class="footer">
             <p>ISY503 Intelligent Systems | Torrens University Australia</p>
             <p class="footer-meta">Built with PyTorch, Flask & Modern Web Technologies</p>
+            <p class="footer-meta">This article belongs to Manh Long (Dan) Nguyen with the AI - UI development</p>
+            <p class="footer-meta">Project will be private access only. More information will be available upon request.</p>
+            <p class="footer-meta">Email: <a href="mailto:manh.nguyen3@student.torrens.edu.au">manh.nguyen3@student.torrens.edu.au</a> | LinkedIn: <a href="https://www.linkedin.com/in/dan-nguyen-appliedai-software-healthcare" target="_blank">Manh Long (Dan) Nguyen</a></p>
         </footer>
     </div>
 
@@ -209,7 +189,7 @@
 
             // Sentiment output
             const isPositive = data.sentiment_class === 'positive';
-            const icon = isPositive ? '✅' : '❌';
+            const icon = isPositive ? '👍' : '👎';
             const colorClass = isPositive ? 'positive-result' : 'negative-result';
 
             sentimentOutput.innerHTML = `
