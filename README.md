@@ -208,15 +208,6 @@ with BiLSTM and Self-Attention. Torrens University Australia.
 
 ---
 
-## 👥 Team & Contributions
-
-| Member | Student ID | Contribution |
-|--------|-----------|--------------|
-| [Name 1] | [ID] | Model architecture design, BiLSTM + Attention implementation |
-| [Name 2] | [ID] | Data preprocessing pipeline, outlier removal, encoding |
-| [Name 3] | [ID] | Flask web application, API design, frontend development |
-| [Name 4] | [ID] | Testing, evaluation, ethical analysis, documentation |
-
 **GitHub Repository:** [Your GitHub Link]
 
 ---
