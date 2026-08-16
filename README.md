@@ -93,7 +93,7 @@ This will:
 python app.py
 ```
 
-Open your browser and navigate to: **http://127.0.0.1:5000**
+Open your browser and navigate to: **http://127.0.0.1:5001**
 
 ---
 
@@ -108,7 +108,7 @@ Open your browser and navigate to: **http://127.0.0.1:5000**
 ### API Endpoint
 
 ```bash
-curl -X POST http://127.0.0.1:5000/analyze \
+curl -X POST http://127.0.0.1:5001/analyze \
   -H "Content-Type: application/json" \
   -d '{"text": "This product is absolutely fantastic!"}'
 ```
