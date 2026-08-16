@@ -15,5 +15,3 @@ nltk>=3.8.0
 # Web Framework
 flask>=2.3.0
 
-# Utilities
-requests>=2.31.0
