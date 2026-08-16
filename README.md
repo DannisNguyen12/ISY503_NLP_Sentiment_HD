@@ -1,7 +1,7 @@
 # ISY503 Intelligent Systems — NLP Sentiment Analysis
 
 > **Assessment 3 | Torrens University Australia**  
-> **HD-Level Implementation | BiLSTM with Self-Attention**
+> **Bi-LSTM Implementation | BiLSTM with Self-Attention**
 
 ---
 
@@ -93,7 +93,7 @@ This will:
 python app.py
 ```
 
-Open your browser and navigate to: **http://127.0.0.1:5000**
+Open your browser and navigate to: **http://127.0.0.1:5001**
 
 ---
 
@@ -108,7 +108,7 @@ Open your browser and navigate to: **http://127.0.0.1:5000**
 ### API Endpoint
 
 ```bash
-curl -X POST http://127.0.0.1:5000/analyze \
+curl -X POST http://127.0.0.1:5001/analyze \
   -H "Content-Type: application/json" \
   -d '{"text": "This product is absolutely fantastic!"}'
 ```
@@ -197,34 +197,8 @@ Automated sentiment analysis influences product rankings, marketing strategies, 
 
 ---
 
-## 📝 Citation
-
-If referencing this work:
-
-```
-[Your Name]. (2026). ISY503 Intelligent Systems: NLP Sentiment Analysis 
-with BiLSTM and Self-Attention. Torrens University Australia.
-```
-
----
-
-## 👥 Team & Contributions
-
-| Member | Student ID | Contribution |
-|--------|-----------|--------------|
-| [Name 1] | [ID] | Model architecture design, BiLSTM + Attention implementation |
-| [Name 2] | [ID] | Data preprocessing pipeline, outlier removal, encoding |
-| [Name 3] | [ID] | Flask web application, API design, frontend development |
-| [Name 4] | [ID] | Testing, evaluation, ethical analysis, documentation |
-
-**GitHub Repository:** [Your GitHub Link]
-
----
-
 ## 📄 License
 
 This project is submitted as part of ISY503 Assessment 3 at Torrens University Australia.
 
 ---
-
-*Built with 💙 for ISY503 Intelligent Systems*
