@@ -1,7 +1,5 @@
-# ISY503 NLP Sentiment Analysis — Dependencies
-# Install with: pip install -r requirements.txt
-
-# Core ML/DL
+# Minimal runtime dependencies for Vercel inference deployment
+Flask>=2.3.0
 torch>=2.0.0
 #numpy>=1.24.0
 

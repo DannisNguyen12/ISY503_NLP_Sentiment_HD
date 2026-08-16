@@ -1,45 +1,48 @@
 # ISY503 Intelligent Systems — NLP Sentiment Analysis
 
 > **Assessment 3 | Torrens University Australia**  
-> **Bi-LSTM Implementation | BiLSTM with Self-Attention**
+> **BiLSTM + Self-Attention | Inference-only Web App for Vercel**
 
 ---
 
 ## 📋 Project Overview
 
-This project implements a **deep learning-based sentiment analysis system** for Amazon product reviews using a **Bidirectional LSTM with Self-Attention mechanism**. The system classifies customer reviews as either **"Positive review"** or **"Negative review"** and is deployed as an interactive web application.
+This project is a sentiment analysis system for Amazon product reviews built with a **BiLSTM + Self-Attention** model. The training pipeline is kept separate from the deployment app so the Vercel version stays lightweight and only runs inference.
 
-### Key Features
-- ✅ **BiLSTM + Self-Attention Architecture** — Captures bidirectional context and focuses on sentiment-bearing words
-- ✅ **Comprehensive Data Pipeline** — Cleaning, outlier removal, encoding, and padding
-- ✅ **Interactive Web Interface** — Real-time sentiment prediction with confidence scoring
-- ✅ **Attention Visualization** — Shows which words influenced the model's decision
-- ✅ **Adversarial Testing** — Evaluates robustness on out-of-domain inputs
-- ✅ **Early Stopping & LR Scheduling** — Prevents overfitting and optimizes convergence
+### What this version does
+- Classifies reviews as **Positive review** or **Negative review**
+- Loads a saved PyTorch model from `models/`
+- Runs a Flask app for browser-based prediction and API access
+- Includes attention visualization for interpretability
+- Keeps training code out of the Vercel runtime to reduce deployment size
 
 ---
 
-## 🏗️ Architecture
+## 🏗️ New Application Architecture
 
 ```
-Input Text
-    ↓
-Text Preprocessing (cleaning, lemmatization, normalization)
-    ↓
-Word Encoding (vocabulary mapping + padding/truncation)
-    ↓
-Embedding Layer (100-dim, fine-tunable)
-    ↓
-Bidirectional LSTM (2 layers, 128 hidden units)
-    ↓
-Self-Attention Mechanism (context-aware weighting)
-    ↓
-Batch Normalization + Dropout (regularization)
-    ↓
-Fully Connected Layers (classification head)
-    ↓
-Sigmoid Activation → Binary Output
+User input
+   ↓
+Flask app (`app.py`)
+   ↓
+Inference module (`inference/inference.py`)
+   ↓
+Load `best_model.pt` + `vocabulary.pkl`
+   ↓
+Preprocess text
+   ↓
+Encode tokens
+   ↓
+BiLSTM + Self-Attention
+   ↓
+Sentiment + confidence + attention data
 ```
+
+### Deployment split
+- `train_model.py` — offline training only
+- `inference/inference.py` — inference-only runtime for Vercel
+- `app.py` — thin wrapper that exposes the Flask app
+- `requirements-vercel.txt` — minimal runtime dependencies
 
 ---
 
@@ -47,87 +50,79 @@ Sigmoid Activation → Binary Output
 
 ```
 ISY503_NLP_Sentiment_HD/
-├── train_model.py          # Model training pipeline
-├── app.py                  # Flask web application
-├── requirements.txt        # Python dependencies
-├── README.md              # This file
-├── data/                  # Dataset directory
-├── models/                # Saved models & vocabulary
-│   ├── best_model.pt      # Trained model checkpoint
-│   ├── vocabulary.pkl     # Word-to-index mapping
-│   ├── config.json        # Training configuration
-│   └── history.json       # Training metrics
+├── train_model.py              # Offline training pipeline
+├── app.py                      # Thin Flask entry point for deployment
+├── inference/
+│   ├── __init__.py
+│   └── inference.py            # Inference-only app and model loading
+├── requirements.txt            # Full project dependencies
+├── requirements-vercel.txt     # Minimal Vercel dependencies
+├── models/
+│   ├── best_model.pt
+│   ├── vocabulary.pkl
+│   ├── config.json
+│   └── history.json
 ├── templates/
-│   └── index.html         # Web interface
+│   └── index.html
 └── static/
-    └── style.css          # UI styling
+    └── style.css
 ```
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Local Run
 
-### 1. Install Dependencies
-
+### Full project environment
 ```bash
 pip install -r requirements.txt
-```
-
-### 2. Train the Model
-
-```bash
 python train_model.py
-```
-
-This will:
-- Load and clean the Amazon review dataset
-- Remove outlier reviews (too short/long)
-- Build vocabulary and encode sequences
-- Train the BiLSTM + Attention model
-- Evaluate on test set
-- Save model artifacts to `models/`
-
-### 3. Launch Web Application
-
-```bash
 python app.py
 ```
 
-Open your browser and navigate to: **http://127.0.0.1:5001**
+### Inference-only environment
+```bash
+pip install -r requirements-vercel.txt
+python app.py
+```
+
+Open your browser at:
+
+- `http://127.0.0.1:5001`
 
 ---
 
 ## 🎯 Usage
 
-### Web Interface
+### Web interface
 1. Enter a product review in the text area
-2. Click **"Analyze Sentiment"**
-3. View the prediction with confidence score
-4. Explore the **Attention Visualization** to see which words drove the decision
+2. Click **Analyze Sentiment**
+3. View the predicted label and confidence score
+4. Inspect the attention visualization to see influential words
 
-### API Endpoint
-
+### API endpoint
 ```bash
 curl -X POST http://127.0.0.1:5001/analyze \
   -H "Content-Type: application/json" \
   -d '{"text": "This product is absolutely fantastic!"}'
 ```
 
-**Response:**
+### Example response
 ```json
 {
   "success": true,
   "sentiment": "Positive review",
   "sentiment_class": "positive",
   "confidence": 0.9876,
-  "attention_data": [...],
-  "token_count": 12
+  "cleaned_text": "this product is absolutely fantastic",
+  "attention_data": [],
+  "input_length": 42,
+  "token_count": 6
 }
 ```
 
 ---
 
-## 📊 Model Performance
+## 📊 Model Summary
 
 | Metric | Value |
 |--------|-------|
@@ -139,48 +134,33 @@ curl -X POST http://127.0.0.1:5001/analyze \
 | Dropout | 0.5 |
 | Test Accuracy | >95% |
 
-### Training Configuration
-- **Optimizer:** Adam (weight decay 1e-5)
-- **Learning Rate:** 0.001 with ReduceLROnPlateau scheduling
-- **Batch Size:** 64
-- **Early Stopping:** Patience = 5 epochs
-- **Gradient Clipping:** Max norm = 1.0
-
 ---
 
 ## 🔬 Original Contributions
 
-The following components represent **original student contributions** (not copied from tutorials):
+The original project components are still preserved in the training pipeline:
 
-1. **Custom Self-Attention Mechanism** — Implements context-aware weighting over BiLSTM outputs, enabling the model to focus on sentiment-critical words regardless of position.
-
-2. **Advanced Preprocessing Pipeline** — Multi-stage cleaning with regex-based HTML/URL removal, repeated character normalization, and lemmatization for spelling standardization.
-
-3. **Statistical Outlier Removal** — Length-based filtering (5–500 words) to eliminate spam, incomplete submissions, and corrupted data.
-
-4. **Training Optimization Stack** — Combines learning rate scheduling, gradient clipping, batch normalization, and early stopping for robust convergence.
-
-5. **Attention Visualization Interface** — Web-based heatmap showing per-word attention weights, providing model interpretability for end users.
-
-6. **Adversarial Test Suite** — Evaluates model on sarcastic, ambiguous, and out-of-domain inputs to assess real-world robustness.
+1. **Custom Self-Attention Mechanism** — focuses on sentiment-bearing words.
+2. **Advanced Preprocessing Pipeline** — HTML/URL removal, repeated character normalization, and lemmatization.
+3. **Statistical Outlier Removal** — filters very short and very long reviews.
+4. **Training Optimization Stack** — learning rate scheduling, gradient clipping, batch normalization, and early stopping.
+5. **Attention Visualization** — helps explain predictions in the web app.
 
 ---
 
 ## ⚖️ Ethical Considerations
 
-This project addresses several ethical dimensions of AI-powered sentiment analysis:
+### Data bias and fairness
+The dataset may reflect category or language bias, so the model should not be treated as universally fair across all review styles.
 
-### 1. **Data Bias & Fairness**
-The Amazon dataset may contain demographic biases (e.g., certain product categories skew toward specific user groups). The model could unfairly classify reviews from underrepresented groups. **Mitigation:** Balanced sampling and outlier removal reduce skew, but ongoing bias auditing is essential.
+### Sarcasm and context
+Sarcastic reviews can be misclassified because the model may over-focus on positive keywords without deeper intent understanding.
 
-### 2. **Sarcasm & Context Misinterpretation**
-Sentiment analysis models often fail on sarcastic statements (e.g., *"Oh great, another broken product"*). Misclassification can damage business reputations or mislead consumers. **Mitigation:** Attention visualization helps identify failure modes; future work should incorporate transformer-based context modeling.
+### Privacy
+The deployment app processes user text in memory and does not store input data by default.
 
-### 3. **Privacy of Review Authors**
-Customer reviews may contain personally identifiable information. While this project uses public datasets, production deployment must comply with GDPR and data protection regulations. **Mitigation:** No user data is stored in the web application; all processing occurs in-memory.
-
-### 4. **Business Decision Impact**
-Automated sentiment analysis influences product rankings, marketing strategies, and inventory decisions. Inaccurate classification can harm small businesses or amplify negative feedback loops. **Mitigation:** Confidence thresholds and human-in-the-loop validation are recommended for production use.
+### Accountability
+Sentiment predictions should support human judgment, especially for low-confidence or high-impact decisions.
 
 ---
 
@@ -189,12 +169,12 @@ Automated sentiment analysis influences product rankings, marketing strategies, 
 | Category | Technology |
 |----------|------------|
 | Deep Learning | PyTorch |
-| NLP | NLTK (tokenization, lemmatization, stopwords) |
-| ML Utilities | scikit-learn, NumPy, Pandas |
+| NLP | NLTK |
+| Utilities | NumPy, Pandas, scikit-learn |
 | Web Framework | Flask |
 | Frontend | HTML5, CSS3, Vanilla JavaScript |
-| Version Control | Git |
 
+---
 
 ## 📄 License
 
